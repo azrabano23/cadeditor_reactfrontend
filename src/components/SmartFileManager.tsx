@@ -14,7 +14,7 @@ interface FileItem {
   name: string;
   size: number;
   type: string;
-  status: 'uploading' | 'uploaded' | 'converting' | 'converted' | 'error';
+  status: 'uploading' | 'uploaded' | 'converting' | 'converted' | 'deploying-ar' | 'ar-ready' | 'error';
   originalFormat: string;
   convertedUrl?: string;
   errorMessage?: string;

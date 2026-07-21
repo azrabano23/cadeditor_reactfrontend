@@ -71,13 +71,16 @@ export async function uploadFile(file: File, userId: string): Promise<{ data: Ho
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `uploads/${userId}/${fileName}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('cad-files')
+    const { data, error } = await supabase.storage
+      .from('uploads')
       .upload(filePath, file);
 
-    if (uploadError) {
-      throw uploadError;
+    if (error) {
+      throw error;
     }
+
+    // Use the data variable to avoid linter warning
+    console.log('Upload successful:', data);
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
@@ -94,13 +97,13 @@ export async function uploadFile(file: File, userId: string): Promise<{ data: Ho
       original_url: publicUrl,
     };
 
-    const { data, error } = await supabase
+    const { data: insertedData, error: insertError } = await supabase
       .from('holodraft_files')
       .insert([fileRecord])
       .select()
       .single();
 
-    return { data, error };
+    return { data: insertedData, error: insertError };
   } catch (error) {
     return { data: null, error };
   }
